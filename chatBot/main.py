@@ -12,6 +12,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 
+
 os.environ["OPENAI_API_KEY"] = "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"
 
 chat = ChatOpenAI(openai_api_key="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")
