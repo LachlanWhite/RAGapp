@@ -43,10 +43,14 @@ class ContentStore:
                 if not line:
                     break
 
-                EntityE = self.Entity(**json.loads(line))
+                #Non-Functional, Entity not taking correct parameters in constructor??
+                #EntityE = self.Entity(**json.loads(line))
 
+                dataDictionary = json.loads(line)
+                
+                EntityE = self.Entity(dataDictionary["courseDescription"], dataDictionary["vector"])
 
-
+                self.entryDB.append(EntityE)
 
     def writeFile(self):
         fileName = "vectorDB.json"
