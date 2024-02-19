@@ -5,3 +5,11 @@ View course details in MyPlan: CSS 101
 CSS 107 Introduction to Programming through Animated Storytelling (5) A&H, RSN
 Introduces the fundamentals of programming using storytelling in virtual worlds; includes creation of characters, games, short stories, storyboards, 3-D motion, classes, methods, and functions. Contemporary topics vary addressing social, scientific, and ethical issues of information technology.
 View course details in MyPlan: CSS 107
+
+CSS 142 Computer Programming I (5) NSc, RSN
+Introduces programming concepts within social, cultural, scientific, mathematical, and technological context. Topics include programming fundamentals (control structures, data types and representation, operations, functions and parameters), computer organization, algorithmic thinking, introductory software engineering concepts (specifications, design, testing), and social and professional issues. Co-requisite: CSSSKL 142.
+View course details in MyPlan: CSS 142
+
+CSS 143 Computer Programming II (5) NSc, RSN
+Transition from basic programming skills to a rigorous process of software development. Familiarization with higher level programming techniques (recursion, generic programming, stacks, queues, trees, searching, and sorting). Emphasizes connection between algorithmic thought and implementation. Prerequisite: minimum grade of 2.7 in CSS 161, CSS 142, or CSE 142. Co-requisite: CSSSKL 143.
+View course details in MyPlan: CSS 143

@@ -15,6 +15,12 @@ class ContentStore:
         
         def toJSON(self):
             return json.dumps(self, default=lambda o: o.__dict__, sort_keys = True, indent = 4)
+        
+        def getVector(self):
+            return self.vector
+        
+        def getCourseDescription(self):
+            return self.courseDescription
 
     #def __init__(self):
         #self.readFile()
@@ -136,6 +142,21 @@ class ContentStore:
         
         return comparisonScore
     
+    #Return a list of chunks that are relevant to the prompt, given a query's vector and the temperature
+    def getRelevantChunks(self, queryVector):
+        relevantChunks = []
+
+        # THIS IS WHERE TO CHANGE HOW SENSITIVE THE FILTER IS
+        temperatureSensitivity = 1
+
+        for x in self.entryDB:
+            score = self.compareVector(x.getVector(), queryVector)
+
+            if(score > temperatureSensitivity):
+                relevantChunks.append(x.getCourseDescription())
+
+        return relevantChunks
+    
     def addEntry(self, userInput):
         vector = self.getVector(userInput)
 
@@ -143,20 +164,25 @@ class ContentStore:
 
         self.entryDB.append(entityE)
 
-        #self.writeFile()
+    #Returns prompt given userQuery, DOES *NOT* INCLUDE THE QUERY!!!!
+    def getPrompt(self, userQuery: str, temperature: float):
+        #take user query + temp
+        #Compare to DB vectors, using temperature as threshold
+        #return relevant chunks + query
+        prompt = "Prompt: You are a helpful chatbot that answers questions surrounding different courses offered at the University of Washington. Here are the course descriptions:\n"
 
-        #self.readFile()
+        vecQuery = self.getVector(userQuery)
+
+        relChunks = self.getRelevantChunks(vecQuery)
+
+        for x in relChunks:
+            prompt += x + "\n"
+
+        return prompt
 
 C = ContentStore()
 #C.addEntry("What color is the sky?")
 
-C.updateVectorDB("courseCatalog.txt")
+#C.updateVectorDB("courseCatalog.txt")
 
-
-
-
-
-
-    
-
-
+myPrompt = C.getPrompt("What prerequisite courses are required to take CSS 143?")
