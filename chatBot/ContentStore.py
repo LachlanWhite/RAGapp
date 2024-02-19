@@ -52,6 +52,27 @@ class ContentStore:
 
                 self.entryDB.append(EntityE)
 
+    #Cycle through the CourseCatalog file until all courses are vectorized and stored in vectorDB. 
+    def updateVectorDB(self, courseCatalogFileName: str):
+        courseDescription = ""
+
+        with open(fileName, "r") as json_file:
+
+            while True:
+                line = json_file.readline()
+
+                if not line:
+                    break
+
+                courseDescription += line
+
+                if line == "\n":
+                    self.addEntry(courseDescription)
+                    courseDescription = ""
+            
+            self.writeFile()
+
+
     def writeFile(self):
         fileName = "vectorDB.json"
 
@@ -115,14 +136,15 @@ class ContentStore:
 
         self.entryDB.append(entityE)
 
-        self.entryDB.append(entityE)
+        #self.writeFile()
 
-        self.writeFile()
-
-        self.readFile()
+        #self.readFile()
 
 C = ContentStore()
-C.addEntry("What color is the sky?")
+#C.addEntry("What color is the sky?")
+
+C.updateVectorDB("courseCatalog.txt")
+
 
 
 
