@@ -56,19 +56,26 @@ class ContentStore:
     def updateVectorDB(self, courseCatalogFileName: str):
         courseDescription = ""
 
-        with open(fileName, "r") as json_file:
+        with open(courseCatalogFileName, "r") as file:
 
-            while True:
-                line = json_file.readline()
+            line = " "
 
-                if not line:
-                    break
+            while line:
+                line = file.readline()
+                while line != "\n":
+                    
+                    if not line:
+                        break
 
-                courseDescription += line
+                    courseDescription += line
+                    line = file.readline()
 
-                if line == "\n":
-                    self.addEntry(courseDescription)
-                    courseDescription = ""
+                ### UNCOMMENT LINE TO FUNCTION
+                if len(courseDescription) > 0:
+                    print(courseDescription)
+                    #self.addEntry(courseDescription)
+
+                courseDescription = ""
             
             self.writeFile()
 

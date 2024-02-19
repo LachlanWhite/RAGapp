@@ -5,9 +5,3 @@ View course details in MyPlan: CSS 101
 CSS 107 Introduction to Programming through Animated Storytelling (5) A&H, RSN
 Introduces the fundamentals of programming using storytelling in virtual worlds; includes creation of characters, games, short stories, storyboards, 3-D motion, classes, methods, and functions. Contemporary topics vary addressing social, scientific, and ethical issues of information technology.
 View course details in MyPlan: CSS 107
-
-
-
-
-
-
