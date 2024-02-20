@@ -8,9 +8,6 @@ class ContentStore:
     def __init__(self):
         self.populateChunkDB("vectorDB.json")
 
-    def __init__(self, fileName: str):
-        self.populateChunkDB(fileName)
-
     class Entity:
         chunk = ""
         vector = []
@@ -187,6 +184,5 @@ C = ContentStore()
 
 myPrompt = C.createPrompt("What prerequisite courses are required to take CSS 350?", 0.66)
 
-#Notes: ReadFile() named to populateChunkDB()
-#       PopulateChunkDB now in contentStore class constructor, paramenters: fileName
+
 
