@@ -184,8 +184,3 @@ C.readFile()
 
 myPrompt = C.createPrompt("What prerequisite courses are required to take CSS 143?", 0.62)
 
-#Notes: entryDB only gets populated when addEntry is called. Need to add entires from vectorDB instead so it doesn't require an api call each time you want to populate
-#Notes: Renamed entryDB -> chunkDB
-#               courseDescription -> chunk
-#               entity.getCourseDecription() -> getChunk()
-#               getPrompt() -> createPrompt
