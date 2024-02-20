@@ -49,9 +49,6 @@ class ContentStore:
                 if not line:
                     break
 
-                #Non-Functional, Entity not taking correct parameters in constructor??
-                #EntityE = self.Entity(**json.loads(line))
-
                 dataDictionary = json.loads(line)
                 
                 EntityE = self.Entity(dataDictionary["courseDescription"], dataDictionary["vector"])
@@ -79,7 +76,7 @@ class ContentStore:
                 ### UNCOMMENT LINE TO FUNCTION
                 if len(courseDescription) > 0:
                     print(courseDescription)
-                    #self.addEntry(courseDescription)
+                    self.addEntry(courseDescription)
 
                 courseDescription = ""
             
@@ -143,16 +140,13 @@ class ContentStore:
         return comparisonScore
     
     #Return a list of chunks that are relevant to the prompt, given a query's vector and the temperature
-    def getRelevantChunks(self, queryVector):
+    def getRelevantChunks(self, queryVector, matchScore: float):
         relevantChunks = []
-
-        # THIS IS WHERE TO CHANGE HOW SENSITIVE THE FILTER IS
-        temperatureSensitivity = 1
 
         for x in self.entryDB:
             score = self.compareVector(x.getVector(), queryVector)
 
-            if(score > temperatureSensitivity):
+            if(score > matchScore):
                 relevantChunks.append(x.getCourseDescription())
 
         return relevantChunks
@@ -165,7 +159,7 @@ class ContentStore:
         self.entryDB.append(entityE)
 
     #Returns prompt given userQuery, DOES *NOT* INCLUDE THE QUERY!!!!
-    def getPrompt(self, userQuery: str, temperature: float):
+    def getPrompt(self, userQuery: str, matchScore: float):
         #take user query + temp
         #Compare to DB vectors, using temperature as threshold
         #return relevant chunks + query
@@ -173,7 +167,7 @@ class ContentStore:
 
         vecQuery = self.getVector(userQuery)
 
-        relChunks = self.getRelevantChunks(vecQuery)
+        relChunks = self.getRelevantChunks(vecQuery, matchScore)
 
         for x in relChunks:
             prompt += x + "\n"
@@ -183,6 +177,6 @@ class ContentStore:
 C = ContentStore()
 #C.addEntry("What color is the sky?")
 
-#C.updateVectorDB("courseCatalog.txt")
+C.updateVectorDB("courseCatalog.txt")
 
-myPrompt = C.getPrompt("What prerequisite courses are required to take CSS 143?")
+myPrompt = C.getPrompt("What prerequisite courses are required to take CSS 143?", 0.55)
