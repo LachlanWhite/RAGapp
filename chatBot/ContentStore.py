@@ -3,14 +3,14 @@ import requests
 import json
 
 class ContentStore:
-    entryDB = []
+    chunkDB = []
 
     class Entity:
-        courseDescription = ""
+        chunk = ""
         vector = []
 
-        def __init__(self, s: str, v: []):
-            self.courseDescription = s
+        def __init__(self, c: str, v: []):
+            self.chunk = c
             self.vector = v
         
         def toJSON(self):
@@ -19,8 +19,8 @@ class ContentStore:
         def getVector(self):
             return self.vector
         
-        def getCourseDescription(self):
-            return self.courseDescription
+        def getChunk(self):
+            return self.chunk
 
     #def __init__(self):
         #self.readFile()
@@ -41,7 +41,7 @@ class ContentStore:
         with open(fileName, "r") as json_file:
             #tempList = json.load(json_file)
 
-            self.entryDB = []
+            self.chunkDB = []
 
             while True:
                 line = json_file.readline()
@@ -53,11 +53,11 @@ class ContentStore:
                 
                 EntityE = self.Entity(dataDictionary["courseDescription"], dataDictionary["vector"])
 
-                self.entryDB.append(EntityE)
+                self.chunkDB.append(EntityE)
 
-    #Cycle through the CourseCatalog file until all courses are vectorized and stored in vectorDB. 
-    def updateVectorDB(self, courseCatalogFileName: str):
-        courseDescription = ""
+    #UpdateChunkDB: Wipes chunkDB and rewrites using given file of chunks (no vectors incl). Parameters are String
+    def updateChunkDB(self, courseCatalogFileName: str):
+        chunk = ""
 
         with open(courseCatalogFileName, "r") as file:
 
@@ -70,15 +70,15 @@ class ContentStore:
                     if not line:
                         break
 
-                    courseDescription += line
+                    chunk += line
                     line = file.readline()
 
                 ### UNCOMMENT LINE TO FUNCTION
-                if len(courseDescription) > 0:
-                    print(courseDescription)
-                    self.addEntry(courseDescription)
+                if len(chunk) > 0:
+                    print(chunk)
+                    self.addEntry(chunk)
 
-                courseDescription = ""
+                chunk = ""
             
             self.writeFile()
 
@@ -99,10 +99,11 @@ class ContentStore:
         '''
         
         with open(fileName, "w") as json_file:
-            for x in self.entryDB:
+            for x in self.chunkDB:
                 temp = json.dumps(x.__dict__)
                 json_file.writelines(temp + "\n")
         
+    #GetVector: Vectorizes string, returns list of floats (vector), parameters are STRING
     def getVector(self, userInput):
         modelType = "text-embedding-3-small"
         query = userInput
@@ -128,7 +129,7 @@ class ContentStore:
 
         return apiData.get("data")[0].get("embedding")
     
-
+    #CompareVector: Compares 2 vectors by calculating the dot product. Returns float value between -1 to 1. Parameters are List(float), List(float)
     def compareVector(self, vector1, vector2):
         comparisonScore = 0
 
@@ -139,15 +140,15 @@ class ContentStore:
         
         return comparisonScore
     
-    #Return a list of chunks that are relevant to the prompt, given a query's vector and the temperature
+    #GetRelevantChunks: Compares query to all vectors in global class database using a match score. Returns List(STRING) of relevant chunks. Parameters are List(float), float
     def getRelevantChunks(self, queryVector, matchScore: float):
         relevantChunks = []
 
-        for x in self.entryDB:
+        for x in self.chunkDB:
             score = self.compareVector(x.getVector(), queryVector)
 
             if(score > matchScore):
-                relevantChunks.append(x.getCourseDescription())
+                relevantChunks.append(x.getChunk())
 
         return relevantChunks
     
@@ -156,10 +157,10 @@ class ContentStore:
 
         entityE = self.Entity(userInput, vector)
 
-        self.entryDB.append(entityE)
+        self.chunkDB.append(entityE)
 
     #Returns prompt given userQuery, DOES *NOT* INCLUDE THE QUERY!!!!
-    def getPrompt(self, userQuery: str, matchScore: float):
+    def createPrompt(self, userQuery: str, matchScore: float):
         #take user query + temp
         #Compare to DB vectors, using temperature as threshold
         #return relevant chunks + query
@@ -177,6 +178,14 @@ class ContentStore:
 C = ContentStore()
 #C.addEntry("What color is the sky?")
 
-C.updateVectorDB("courseCatalog.txt")
+#C.updateVectorDB("courseCatalog.txt")
 
-myPrompt = C.getPrompt("What prerequisite courses are required to take CSS 143?", 0.55)
+C.readFile()
+
+myPrompt = C.createPrompt("What prerequisite courses are required to take CSS 143?", 0.62)
+
+#Notes: entryDB only gets populated when addEntry is called. Need to add entires from vectorDB instead so it doesn't require an api call each time you want to populate
+#Notes: Renamed entryDB -> chunkDB
+#               courseDescription -> chunk
+#               entity.getCourseDecription() -> getChunk()
+#               getPrompt() -> createPrompt
