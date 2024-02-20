@@ -5,6 +5,12 @@ import json
 class ContentStore:
     chunkDB = []
 
+    def __init__(self):
+        self.populateChunkDB("vectorDB.json")
+
+    def __init__(self, fileName: str):
+        self.populateChunkDB(fileName)
+
     class Entity:
         chunk = ""
         vector = []
@@ -25,8 +31,7 @@ class ContentStore:
     #def __init__(self):
         #self.readFile()
 
-    def readFile(self):
-        fileName = "vectorDB.json"
+    def populateChunkDB(self, fileName):
 
         '''
         if not os.path.isfile(fileName):
@@ -51,7 +56,7 @@ class ContentStore:
 
                 dataDictionary = json.loads(line)
                 
-                EntityE = self.Entity(dataDictionary["courseDescription"], dataDictionary["vector"])
+                EntityE = self.Entity(dataDictionary["chunk"], dataDictionary["vector"])
 
                 self.chunkDB.append(EntityE)
 
@@ -180,7 +185,8 @@ C = ContentStore()
 
 #C.updateVectorDB("courseCatalog.txt")
 
-C.readFile()
+myPrompt = C.createPrompt("What prerequisite courses are required to take CSS 350?", 0.66)
 
-myPrompt = C.createPrompt("What prerequisite courses are required to take CSS 143?", 0.62)
+#Notes: ReadFile() named to populateChunkDB()
+#       PopulateChunkDB now in contentStore class constructor, paramenters: fileName
 
