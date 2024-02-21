@@ -25,9 +25,6 @@ class ContentStore:
         def getChunk(self):
             return self.chunk
 
-    #def __init__(self):
-        #self.readFile()
-
     def populateChunkDB(self, fileName):
 
         '''
@@ -121,8 +118,8 @@ class ContentStore:
 
         headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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',
-        'Cookie': '__cf_bm=MyXTuajJDs2sfXyQPOsLBrgeUEhYfuD_e9p9eyWCmT8-1707591857-1-AdAv1O+w3r+YesTnNNvqWEPSCbzMSkSUVn/FbneGZgfIRHfRrI/hJOtpFiIQN5NcL7i2UpYL2PRDotczLdF68Ko=; _cfuvid=OnX782w1UPhMSvrliOKLtv5U603FU9F_az9j33S5x7I-1707591545673-0-604800000'
+        'Authorization': os.getenv('AUTH_TOKEN'),
+        'Cookie': os.getenv('COOKIE')
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
@@ -176,13 +173,11 @@ class ContentStore:
             prompt += x + "\n"
 
         return prompt
-
+    
 C = ContentStore()
 #C.addEntry("What color is the sky?")
 
 #C.updateVectorDB("courseCatalog.txt")
 
 myPrompt = C.createPrompt("What prerequisite courses are required to take CSS 350?", 0.66)
-
-
 
