@@ -176,20 +176,37 @@ class ContentStore:
     
     #Conversation is a stack of previous queries/responses. Need to take last 6 entries (3 pairs) and add them to beginning of messages
     def getPayload(self, query, conversation):
-        messages = []
-
-        for x in range(min(len(conversation), 6)):
-            messages += conversation.pop()
-
-        messages.append( 
-        {
+        
+        #Inserting prompt and relevant information to query. 
+        messages = [
+            {
             "role": "assistant",
             "content": self.createPrompt(query, 0.66)
-        },
-        {
+            }
+        ]
+
+        #Populating message with last 3 query/reponses for context to conversation. 
+        for x in range(min(len(conversation), 3)):
+            messages.append(
+                {
+                "role": "assistant",
+                "content": conversation.pop()
+                }
+            )
+
+            messages.append(
+                {
+                "role": "user",
+                "content": conversation.pop()
+                }
+            )
+
+        #Appending user query to end of messages. 
+        messages.append(
+            {
             "role": "user",
             "content": query
-        }
+            }
         )
         
         payload = json.dumps({
@@ -203,12 +220,6 @@ class ContentStore:
         "presence_penalty": 0,
         "frequency_penalty": 0
         })
-
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': os.getenv('AUTH_TOKEN')
-        }
 
         return payload
     
