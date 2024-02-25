@@ -4,13 +4,18 @@ import json
 import ContentStore
 import requests
 
-app = Flask(RAGmodel)
+app = Flask(__name__)
 
-@app.ropute('api/ping', methods = ['GET'])
+def debugPrint(message):
+    if app.debug:
+        print(message)
+    return message
+
+@app.route('/api/ping', methods = ['GET'])
 def ping():
-    return jsonify({OK}), 204
+    return debugPrint(json.dumps({'success': True})), 200
 
-@app.route('api/RAGmodel', methods = ['POST'])
+@app.route('/api/RAGmodel', methods = ['POST'])
 def RAG():
     ContentS = ContentStore.ContentStore()
     url = "https://api.openai.com/v1/chat/completions"
@@ -24,7 +29,7 @@ def RAG():
     data = request.get_json()
 
     if 'query' not in data or 'conversation' not in data:
-        return jsonify({'error': 'missing parameters'}), 400
+        return json.dumps({'error': 'missing parameters'}), 400
     
     query = data['query']
 
@@ -32,4 +37,9 @@ def RAG():
 
     response = requests.request("POST", url, headers=headers, data=ContentS.getPayload(query, conversation))
 
+    return response
+
 #Structure: Receive STR (query), Stack of STR (Conversation). Send STR (response), stack of STR (Conversation)
+    
+if __name__ == "__main__":
+    app.run(debug=True)

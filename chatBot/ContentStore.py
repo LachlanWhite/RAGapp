@@ -186,7 +186,7 @@ class ContentStore:
         ]
 
         #Populating message with last 3 query/reponses for context to conversation. 
-        for x in range(min(len(conversation), 3)):
+        for x in range(min(len(conversation) - 1, 2)):
             messages.append(
                 {
                 "role": "assistant",
