@@ -174,6 +174,44 @@ class ContentStore:
 
         return prompt
     
+    #Conversation is a stack of previous queries/responses. Need to take last 6 entries (3 pairs) and add them to beginning of messages
+    def getPayload(self, query, conversation):
+        messages = []
+
+        for x in range(min(len(conversation), 6)):
+            messages += conversation.pop()
+
+        messages.append( 
+        {
+            "role": "assistant",
+            "content": self.createPrompt(query, 0.66)
+        },
+        {
+            "role": "user",
+            "content": query
+        }
+        )
+        
+        payload = json.dumps({
+        "model": "gpt-3.5-turbo",
+        "messages": messages,
+        "temperature": 1,
+        "top_p": 1,
+        "n": 1,
+        "stream": False,
+        "max_tokens": 4096,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+        })
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': os.getenv('AUTH_TOKEN')
+        }
+
+        return payload
+    
 C = ContentStore()
 #C.addEntry("What color is the sky?")
 
