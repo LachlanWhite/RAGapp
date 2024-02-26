@@ -37,7 +37,7 @@ def RAG():
 
     response = requests.request("POST", url, headers=headers, data=ContentS.getPayload(query, conversation))
 
-    return response
+    return response.text, 200
 
 #Structure: Receive STR (query), Stack of STR (Conversation). Send STR (response), stack of STR (Conversation)
     

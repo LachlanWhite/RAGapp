@@ -10,14 +10,24 @@ def call_api(url, string_param, list_param):
     # Process the response here
     # ...
     
-    return response.json  # Assuming the API returns JSON data
+    return response  # Assuming the API returns JSON data
 
 # Example usage
 api_url = 'http://localhost:5000/api/RAGmodel'
-string_param = 'What are the prerequisite courses to take CSS 360?'
-list_param = ['apple', 'banana', 'cherry', 'orange']
+string_param = ""
+list_param = []
 
-response_data = call_api(api_url, string_param, list_param)
+while True:
+    string_param = input("Question: ")
 
-#response_data = requests.request('POST', api_url)
-print(response_data)
+    if string_param == 'exit':
+        break
+
+    response_data = call_api(api_url, string_param, list_param)
+
+    answer = response_data.json()
+
+    list_param.append(string_param)
+    list_param.append(answer["choices"][0]['message']['content'])
+
+    print(answer["choices"][0]['message']['content'])
